@@ -22,16 +22,16 @@ pipeline {
         stage('📦 Install Dependencies') {
             steps {
                 echo '=== Installing Node.js dependencies ==='
-                sh 'npm install'
-                sh 'npm --version'
-                sh 'node --version'
+                bat 'npm install'
+                bat 'npm --version'
+                bat 'node --version'
             }
         }
 
         stage('🧪 Run Tests') {
             steps {
                 echo '=== Running tests ==='
-                sh 'npm test'
+                bat 'npm test'
             }
         }
 
@@ -54,7 +54,7 @@ pipeline {
             steps {
                 echo '=== Running SonarQube Security Analysis ==='
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
+                    bat '''
                         sonar-scanner \
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                         -Dsonar.projectName="CI/CD Demo App" \
@@ -71,16 +71,16 @@ pipeline {
         stage('🐳 Docker Build') {
             steps {
                 echo '=== Building Docker Image ==='
-                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
-                sh "docker build -t ${DOCKER_IMAGE}:latest ."
-                sh "docker images | grep ${DOCKER_IMAGE}"
+                bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                bat "docker build -t ${DOCKER_IMAGE}:latest ."
+                bat "docker images | grep ${DOCKER_IMAGE}"
             }
         }
 
         stage('🔒 Docker Image Security Scan') {
             steps {
                 echo '=== Scanning Docker image for vulnerabilities ==='
-                sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${DOCKER_IMAGE}:latest || true"
+                bat "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${DOCKER_IMAGE}:latest || true"
             }
         }
 
@@ -92,11 +92,11 @@ pipeline {
                     passwordVariable: 'DOCKER_PASSWORD',
                     usernameVariable: 'DOCKER_USERNAME'
                 )]) {
-                    sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                    sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_HUB_REPO}:${DOCKER_TAG}"
-                    sh "docker tag ${DOCKER_IMAGE}:latest ${DOCKER_HUB_REPO}:latest"
-                    sh "docker push ${DOCKER_HUB_REPO}:${DOCKER_TAG}"
-                    sh "docker push ${DOCKER_HUB_REPO}:latest"
+                    bat "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                    bat "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_HUB_REPO}:${DOCKER_TAG}"
+                    bat "docker tag ${DOCKER_IMAGE}:latest ${DOCKER_HUB_REPO}:latest"
+                    bat "docker push ${DOCKER_HUB_REPO}:${DOCKER_TAG}"
+                    bat "docker push ${DOCKER_HUB_REPO}:latest"
                 }
             }
         }
@@ -105,7 +105,7 @@ pipeline {
             steps {
                 echo '=== Deploying to Azure Container Instances ==='
                 withCredentials([azureServicePrincipal('azure-credentials')]) {
-                    sh '''
+                    bat '''
                         az login --service-principal \
                             -u $AZURE_CLIENT_ID \
                             -p $AZURE_CLIENT_SECRET \
@@ -128,8 +128,8 @@ pipeline {
         stage('✅ Smoke Test') {
             steps {
                 echo '=== Running smoke test on deployed app ==='
-                sh 'sleep 30'
-                sh 'curl -f http://cicd-demo-app.eastus.azurecontainer.io:3000 || echo "Smoke test - check Azure portal"'
+                bat 'sleep 30'
+                bat 'curl -f http://cicd-demo-app.eastus.azurecontainer.io:3000 || echo "Smoke test - check Azure portal"'
             }
         }
     }
@@ -137,7 +137,7 @@ pipeline {
     post {
         always {
             echo '=== Pipeline completed ==='
-            sh 'docker logout || true'
+            bat 'docker logout || true'
             cleanWs()
         }
         success {
