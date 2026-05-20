@@ -42,23 +42,29 @@ pipeline {
     }
 }
 
-        stage('🔐 SonarQube Analysis') {
-            steps {
-                echo '=== Running SonarQube Security Analysis ==='
-                withSonarQubeEnv('SonarQube') {
-                    bat '''
-                        "C:\\Users\\admin\\Desktop\\sonarqube\\sonar-scanner-8.0.1.6346-windows-x64\\bin\\sonar-scanner.bat" ^
-                        -Dsonar.projectKey=cicd-demo-app ^
-                        -Dsonar.projectName="CI/CD Demo App" ^
-                        -Dsonar.projectVersion=%BUILD_NUMBER% ^
-                        -Dsonar.sources=. ^
-                        -Dsonar.exclusions=node_modules/**,dependency-check-report/** ^
-                        -Dsonar.language=js ^
-                        -Dsonar.token=%SONAR_TOKEN%
-                    '''
-                }
+       stage('🔐 SonarQube Analysis') {
+    steps {
+
+        echo '=== Running SonarQube Security Analysis ==='
+
+        withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+
+            withSonarQubeEnv('SonarQube') {
+
+                bat """
+                    "C:\\Users\\admin\\Desktop\\sonarqube\\sonar-scanner-8.0.1.6346-windows-x64\\bin\\sonar-scanner.bat" ^
+                    -Dsonar.projectKey=cicd-demo-app ^
+                    -Dsonar.projectName="CI/CD Demo App" ^
+                    -Dsonar.projectVersion=%BUILD_NUMBER% ^
+                    -Dsonar.sources=. ^
+                    -Dsonar.exclusions=node_modules/**,dependency-check-report/** ^
+                    -Dsonar.language=js ^
+                    -Dsonar.token=%SONAR_TOKEN%
+                """
             }
         }
+    }
+}
 
         stage('🐳 Docker Build') {
             steps {
