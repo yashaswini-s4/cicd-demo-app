@@ -76,10 +76,13 @@ pipeline {
         }
 
         stage('🔒 Docker Image Security Scan') {
-            steps {
-                echo '=== Scanning Docker image for vulnerabilities ==='
-                bat "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${DOCKER_IMAGE}:latest || true"
-            }
+             steps {
+                     echo '=== Scanning Docker image for vulnerabilities ==='
+           
+                     bat """
+                          docker run --rm aquasec/trivy image ${DOCKER_IMAGE}:latest
+                         """
+                    }
         }
 
         stage('🚀 Docker Push to Hub') {
