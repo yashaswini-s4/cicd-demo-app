@@ -53,7 +53,8 @@ pipeline {
                         -Dsonar.projectVersion=%BUILD_NUMBER% ^
                         -Dsonar.sources=. ^
                         -Dsonar.exclusions=node_modules/**,dependency-check-report/** ^
-                        -Dsonar.language=js
+                        -Dsonar.language=js ^
+                        -Dsonar.token=%SONAR_TOKEN%
                     '''
                 }
             }
