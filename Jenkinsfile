@@ -47,14 +47,13 @@ pipeline {
                 echo '=== Running SonarQube Security Analysis ==='
                 withSonarQubeEnv('SonarQube') {
                     bat '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.projectName="CI/CD Demo App" \
-                        -Dsonar.projectVersion=${BUILD_NUMBER} \
-                        -Dsonar.sources=. \
-                        -Dsonar.exclusions=node_modules/**,dependency-check-report/** \
-                        -Dsonar.language=js \
-                        -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                        "C:\Users\admin\Desktop\sonarqube\sonar-scanner-8.0.1.6346-windows-x64\bin\sonar-scanner.bat" ^
+                        -Dsonar.projectKey=cicd-demo-app ^
+                        -Dsonar.projectName="CI/CD Demo App" ^
+                        -Dsonar.projectVersion=%BUILD_NUMBER% ^
+                        -Dsonar.sources=. ^
+                        -Dsonar.exclusions=node_modules/**,dependency-check-report/** ^
+                        -Dsonar.language=js
                     '''
                 }
             }
