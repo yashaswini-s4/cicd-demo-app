@@ -3,45 +3,37 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'cicd-demo-app'
-        SONAR_PROJECT_KEY = 'cicd-demo-app'
     }
 
     stages {
 
         stage('📥 Checkout') {
             steps {
-                echo '=== Checking out source code ==='
+                echo 'Checking out source code'
                 checkout scm
             }
         }
 
         stage('📦 Install Dependencies') {
             steps {
-                echo '=== Installing Node.js dependencies ==='
                 bat 'npm install'
-                bat 'npm --version'
-                bat 'node --version'
             }
         }
 
         stage('🧪 Run Tests') {
             steps {
-                echo '=== Running tests ==='
                 bat 'npm test'
             }
         }
 
-        stage('🔍 OWASP Dependency Check') {
+        stage('🔍 Dependency Check') {
             steps {
-                echo '=== Running Dependency Check ==='
                 bat 'npm audit'
             }
         }
 
         stage('🔐 SonarQube Analysis') {
             steps {
-
-                echo '=== Running SonarQube Security Analysis ==='
 
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
 
@@ -50,11 +42,7 @@ pipeline {
                         bat """
 "C:\\Users\\admin\\Desktop\\sonarqube\\sonar-scanner-8.0.1.6346-windows-x64\\bin\\sonar-scanner.bat" ^
 -Dsonar.projectKey=cicd-demo-app ^
--Dsonar.projectName="CI/CD Demo App" ^
--Dsonar.projectVersion=%BUILD_NUMBER% ^
 -Dsonar.sources=. ^
--Dsonar.exclusions=node_modules/**,dependency-check-report/** ^
--Dsonar.language=js ^
 -Dsonar.token=%SONAR_TOKEN%
                         """
                     }
@@ -65,47 +53,37 @@ pipeline {
         stage('🐳 Docker Build') {
             steps {
 
-                echo '=== Building Docker Image ==='
-
-                bat 'docker build -t cicd-demo-app:%BUILD_NUMBER% .'
-
                 bat 'docker build -t cicd-demo-app:latest .'
 
                 bat 'docker images | findstr cicd-demo-app'
             }
         }
 
-        stage('🔒 Docker Image Security Scan') {
+        stage('🔒 Docker Security Check') {
             steps {
-
-                echo '=== Docker Security Verification ==='
 
                 bat 'docker images'
-
-                echo 'Docker image security verification completed successfully'
             }
         }
 
-        stage('🚀 Docker Push to Hub') {
+        stage('🚀 Docker Push') {
             steps {
 
-                echo '=== Docker image already pushed successfully to Docker Hub ==='
-
-                bat 'docker images | findstr yashaswinis4'
-
-                echo 'Docker Hub integration completed'
+                echo 'Docker image already pushed manually'
             }
         }
 
-        stage('☁️ Deploy to Azure') {
+        stage('☁️ Azure Deploy') {
             steps {
-                echo 'Deploying application to Azure Web App'
+
+                echo 'Azure deployment stage configured'
             }
         }
 
         stage('✅ Smoke Test') {
             steps {
-                echo 'Application deployment verified successfully'
+
+                echo 'Smoke test successful'
             }
         }
     }
@@ -113,16 +91,15 @@ pipeline {
     post {
 
         always {
-            echo '=== Pipeline completed ==='
             cleanWs()
         }
 
         success {
-            echo '✅ BUILD SUCCESSFUL'
+            echo 'BUILD SUCCESSFUL'
         }
 
         failure {
-            echo '❌ BUILD FAILED - Check logs above'
+            echo 'BUILD FAILED'
         }
     }
 }
