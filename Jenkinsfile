@@ -71,7 +71,7 @@ pipeline {
                 echo '=== Building Docker Image ==='
                 bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 bat "docker build -t ${DOCKER_IMAGE}:latest ."
-                bat "docker images | grep ${DOCKER_IMAGE}"
+                bat 'docker images | findstr cicd-demo-app'
             }
         }
 
