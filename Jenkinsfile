@@ -86,21 +86,24 @@ pipeline {
 }
 
         stage('🚀 Docker Push to Hub') {
-            steps {
-                echo '=== Pushing image to Docker Hub ==='
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub-credentials',
-                    passwordVariable: 'DOCKER_PASSWORD',
-                    usernameVariable: 'DOCKER_USERNAME'
-                )]) {
-                    bat "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                    bat "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_HUB_REPO}:${DOCKER_TAG}"
-                    bat "docker tag ${DOCKER_IMAGE}:latest ${DOCKER_HUB_REPO}:latest"
-                    bat "docker push ${DOCKER_HUB_REPO}:${DOCKER_TAG}"
-                    bat "docker push ${DOCKER_HUB_REPO}:latest"
-                }
-            }
+    steps {
+
+        withCredentials([usernamePassword(
+            credentialsId: 'docker-hub-credentials',
+            usernameVariable: 'DOCKER_USERNAME',
+            passwordVariable: 'DOCKER_PASSWORD'
+        )]) {
+
+            bat """
+echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
+
+docker tag cicd-demo-app:latest yashaswinis4/cicd-demo-app:latest
+
+docker push yashaswinis4/cicd-demo-app:latest
+            """
         }
+    }
+}
 
         stage('☁️ Deploy to Azure') {
             steps {
