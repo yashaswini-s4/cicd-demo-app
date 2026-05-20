@@ -77,12 +77,10 @@ pipeline {
 
         stage('🔒 Docker Image Security Scan') {
              steps {
-                     echo '=== Scanning Docker image for vulnerabilities ==='
-           
-                     bat """
-                          docker run --rm aquasec/trivy image ${DOCKER_IMAGE}:latest
-                         """
-                    }
+                 echo '=== Running Docker Security Scan ==='
+
+                 bat 'docker scout quickview cicd-demo-app:latest'
+            }
         }
 
         stage('🚀 Docker Push to Hub') {
