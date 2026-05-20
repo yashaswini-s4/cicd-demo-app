@@ -85,7 +85,7 @@ pipeline {
     }
 }
 
-        stage('🚀 Docker Push to Hub') {
+     stage('🚀 Docker Push to Hub') {
     steps {
 
         withCredentials([usernamePassword(
