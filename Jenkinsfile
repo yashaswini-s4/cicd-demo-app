@@ -132,7 +132,7 @@ docker push yashaswinis4/cicd-demo-app:latest
     post {
         always {
             echo '=== Pipeline completed ==='
-            bat 'docker logout || true'
+           
             cleanWs()
         }
         success {
