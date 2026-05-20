@@ -76,12 +76,12 @@ pipeline {
         }
 
         stage('🔒 Docker Image Security Scan') {
-             steps {
-                 echo '=== Running Docker Security Scan ==='
+    steps {
+        echo '=== Running Docker Security Check ==='
 
-                 bat 'docker scout quickview cicd-demo-app:latest'
-            }
-        }
+        bat 'docker scan cicd-demo-app:latest'
+    }
+}
 
         stage('🚀 Docker Push to Hub') {
             steps {
