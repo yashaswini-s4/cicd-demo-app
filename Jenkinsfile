@@ -88,20 +88,11 @@ pipeline {
      stage('🚀 Docker Push to Hub') {
     steps {
 
-        withCredentials([usernamePassword(
-            credentialsId: 'docker-hub-credentials',
-            usernameVariable: 'DOCKER_USERNAME',
-            passwordVariable: 'DOCKER_PASSWORD'
-        )]) {
-
-            bat """
-echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
-
+        bat '''
 docker tag cicd-demo-app:latest yashaswinis4/cicd-demo-app:latest
 
 docker push yashaswinis4/cicd-demo-app:latest
-            """
-        }
+        '''
     }
 }
 
