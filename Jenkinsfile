@@ -47,7 +47,7 @@ pipeline {
                 echo '=== Running SonarQube Security Analysis ==='
                 withSonarQubeEnv('SonarQube') {
                     bat '''
-                        "C:\Users\admin\Desktop\sonarqube\sonar-scanner-8.0.1.6346-windows-x64\bin\sonar-scanner.bat" ^
+                        "C:\\Users\\admin\\Desktop\\sonarqube\\sonar-scanner-8.0.1.6346-windows-x64\\bin\\sonar-scanner.bat" ^
                         -Dsonar.projectKey=cicd-demo-app ^
                         -Dsonar.projectName="CI/CD Demo App" ^
                         -Dsonar.projectVersion=%BUILD_NUMBER% ^
