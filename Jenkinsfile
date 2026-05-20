@@ -36,19 +36,11 @@ pipeline {
         }
 
         stage('🔍 OWASP Dependency Check') {
-            steps {
-                echo '=== Running OWASP Dependency Check ==='
-                dependencyCheck additionalArguments: '''
-                    --scan ./
-                    --format HTML
-                    --format XML
-                    --out ./dependency-check-report
-                    --prettyPrint
-                ''', odcInstallation: 'OWASP-Dependency-Check'
-                
-                dependencyCheckPublisher pattern: 'dependency-check-report/dependency-check-report.xml'
-            }
-        }
+    steps {
+        echo '=== Running Dependency Check ==='
+        bat 'npm audit'
+    }
+}
 
         stage('🔐 SonarQube Analysis') {
             steps {
